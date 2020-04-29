@@ -21,8 +21,8 @@ class surveyButton: UIButton {
     }
     
     func setupButton()  {
-        //setTitleColor(.white, for: .normal)
-        setTitleColor(.red, for: .normal)
+        setTitleColor(.white, for: .normal)
+        //setTitleColor(.red, for: .normal)
         //backgroundColor = .red
         backgroundColor = .purple //.blue
         titleLabel?.font = UIFont(name: "AvenirNext-DemiBoldItalic", size: 28)

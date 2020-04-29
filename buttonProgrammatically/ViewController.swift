@@ -9,7 +9,8 @@
 import UIKit
 import AVFoundation // необходимо для проигрывания звука
 
-var audioPlayer:AVAudioPlayer?
+//var audioPlayer:AVAudioPlayer?
+var audioPlayer:AVAudioPlayer!
 var timer:Timer?
 var sec:Int = 0
 var mmsec:Double = 0
@@ -24,15 +25,25 @@ class ViewController: UIViewController {
     var lastPressed = Int()
     var totalError = 0
     var selectedTaskIndex = String()
+    var digitsColor = String()
+    var digitsDirection = Bool()
+    var intDirection: Int {
+        if digitsDirection {
+            return 1
+        } else {
+            return -1
+        }
+    }
+    var totalPressed: Int = 0
     /* https://shkolabuduschego.ru/school/diagnostika-vnimaniya-shkolnikov-s-pomoshhyu-tablits.html */
     //таблицы Шульте
  // присотанавливать таймер ПАУЗА если больше 5 минут - человек ушел
-// разобраться как дима смог ускорить счетчик (нет обнуления счетчика времени)
 // при переворачивании пересчитывать constraints viewstack
-// не правильно считает ошибку если жмешь на одну и туже кнопку 2 раза подряд А может оставить? Все логично
     //легкий режим с подсветкой после третьего раза
     //режим для алфавита)))
-    //режим - обратная последовательность
+    //красный белый
+    //обезьяна
+    //
     
     
     
@@ -43,8 +54,14 @@ class ViewController: UIViewController {
               timer?.invalidate()
               mmsec = 0
               timeLbl.text = String(format:"%.2f",mmsec)
-              lastPressed = 0
+        if intDirection == 1 {
+            lastPressed = 0
+        } else {
+            lastPressed = Int(countGlobal*countGlobal) + 1
+        }
+              
               playSound(playSound: "restart")
+              totalPressed = 0
     }
     
     
@@ -125,29 +142,12 @@ class ViewController: UIViewController {
         var result = [String]()
         digit = [] //обнуление массива
         
-        /*
-        for i in 1...size-1 {
-            
-            repeat {
-                stRandom = String(Int.random(in: 1..<size+1))
-                if (digit.count == 0)   {
-                    digit.append(stRandom)
-                     print("\(1) ) \(stRandom) : 0")
-                }
-                result = digit.filter { $0 == stRandom}
-                print("\(i+1) ) \(stRandom) : \(result.count)")
-            } while result.count >= 1
-            
-            digit.append(stRandom)
-        }
-        */
-        
         for j in 1...size {
              digit.append(String(j))
         }
         
         digit.shuffle()
-        print(digit)
+        //print(digit)
     }
 
     func customButton(_ text:String,_ yline:Double) {
@@ -167,47 +167,86 @@ class ViewController: UIViewController {
     
     func startTimer() {
         sec = 0
-           timer = Timer.scheduledTimer(timeInterval: 0.099, target: self, selector: #selector(ViewController.tic), userInfo: nil, repeats: true)
+           timer = Timer.scheduledTimer(timeInterval: 0.09, target: self, selector: #selector(ViewController.tic), userInfo: nil, repeats: true)
            timer?.fire()
+        
     }
     
     @objc func buttonClicked(bb :UIButton) {
         
+        totalPressed = totalPressed + 1
+        print("totalPressed = \(totalPressed)")
+       
         print("Pressed \(bb.titleLabel!.text!)")
         var pressed = Int(bb.titleLabel!.text!)
        
-        if pressed == 1 {
+         if totalPressed == 1 {
             print("Start")
-            startTimer()
-        } else
-            if (pressed == Int(countGlobal*countGlobal)) && (lastPressed+1 == pressed) {
-                print("Finish")
-                timer?.invalidate()
-                
-                DispatchQueue.main.async {
-                    self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
-                    self.playSound(playSound: "finish")
-                }
-                
+            print(intDirection)
+                self.startTimer()
         }
-        
-        if (lastPressed+1 == pressed) && (pressed != Int(countGlobal*countGlobal)) {
-            lastPressed = pressed!
-         //   print("ok")
+           
+        if intDirection == 1 {
+            //прямой отсчет
+            if (pressed == Int(self.countGlobal*self.countGlobal)) && (self.lastPressed+intDirection == pressed) {
+                             timer?.invalidate()
+                         
+                         DispatchQueue.main.async {
+                             self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                             self.playSound(playSound: "finish")
+                         }
+                         
+                 }
             
-            DispatchQueue.main.async {
-                self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + 1)"
-                self.playSound(playSound: "Ok")
-                }
+            if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
+                self.lastPressed = pressed!
+            
+                DispatchQueue.main.async {
+                    self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                    self.playSound(playSound: "Ok")
+                    }
             
         } else
-        if (lastPressed+1 != pressed) && (pressed != Int(countGlobal*countGlobal)) {
-            print("Error. last \(lastPressed)")
-            totalError = totalError+1
-            DispatchQueue.main.async {
-                self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + 1)"
-                self.playSound(playSound: "Error")
-            }
+                if (self.lastPressed+intDirection != pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
+                    print("Error. last \(self.lastPressed)")
+                    self.totalError = self.totalError+1
+                DispatchQueue.main.async {
+                    self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                    self.playSound(playSound: "Error")
+                    }
+        }
+        } else {
+            //обратный отсчет
+            if (pressed == 1) && (self.lastPressed+intDirection == pressed) {
+                         print("Finish")
+                             timer?.invalidate()
+                         
+                         DispatchQueue.main.async {
+                             
+                             self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                             self.playSound(playSound: "finish")
+                         }
+                         
+                 }
+            
+            
+            if (self.lastPressed+intDirection == pressed) && (pressed != 1) {
+                           self.lastPressed = pressed!
+                       
+                           DispatchQueue.main.async {
+                               self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                               self.playSound(playSound: "Ok")
+                               }
+                       
+                   } else
+                           if (self.lastPressed+intDirection != pressed) && (pressed != 1) {
+                               print("Error. last \(self.lastPressed)")
+                               self.totalError = self.totalError+1
+                           DispatchQueue.main.async {
+                            self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                               self.playSound(playSound: "Error")
+                               }
+                   }
         }
         
         
@@ -217,19 +256,30 @@ class ViewController: UIViewController {
         
         var sizeSmall = Int(selectedTaskIndex)!
         
-        
-        resLabel.text = "Push 1"
         countGlobal = sizeSmall
         generateDigitArray(countDigitArray: countGlobal ) //генерация массива с данными
-        
-        print("Высота экрана \(view.frame.height)")
-        print("Ширина экрана \(view.frame.width)")
+        timer?.invalidate()
+      
+        if digitsDirection {
+                 resLabel.text = "Push 1"
+             }
+             else {
+                resLabel.text = "Push " + String(countGlobal*countGlobal)
+                lastPressed = Int(countGlobal*countGlobal) + 1
+             }
+//        print("Высота экрана \(view.frame.height)")
+//              print("Ширина экрана \(view.frame.width)")
+//
         super.viewDidLoad()
     
         configureStackView(numberOfBut: sizeSmall)
         mmsec = 0
-        // Do any additional setup after loading the view.
+    
     }
+    
+   
+    
+    
   
     func playSound(playSound: String) {
           var url = Bundle.main.url(forResource: "click", withExtension: "mp3")
@@ -273,16 +323,20 @@ class ViewController: UIViewController {
     
     @objc func tic(){ //функция расчета времени
           
-        mmsec += 0.099
+        mmsec += 0.09
           if mmsec >= 600 {
               timer?.invalidate()
               mmsec = 0
           } else {
                 var tSt = prodTimeString(time: mmsec)
-                timeLbl.text = tSt
+            //print("Поток :\(Thread.current)")
+           // print("время \(mmsec)")
+                    self.timeLbl.text = tSt
           }
       }
 
 
 }
+
+
 

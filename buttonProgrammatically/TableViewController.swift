@@ -9,7 +9,7 @@
 import UIKit
  
 class TableViewController: UITableViewController {
-    var task = ["2x2","3x3","4x4","5x5","6x6","7x7","8x8","4x4 обратный","5x5 обратный","6x6/обратный", "4x4 красный/черный", "6x6 красный/черный"]
+    var task = ["2x2","3x3","4x4","5x5","6x6","7x7","8x8","3x3 обратный","4x4 обратный","5x5 обратный","6x6/обратный", "4x4 красный/черный", "6x6 красный/черный"]
     var sss = String()
 
     override func viewDidLoad() {
@@ -37,7 +37,7 @@ class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        cell.listLbl.text = task[indexPath.row]
+        cell.listLbl.text = task[indexPath.row] + " index:" + String(indexPath.row)
         
         return cell
     }
@@ -51,7 +51,15 @@ class TableViewController: UITableViewController {
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueTask", let destination = segue.destination as? ViewController,
             let sIndex = tableView.indexPathForSelectedRow?.row {
-            destination.selectedTaskIndex = String(sIndex+2)
+            
+            if (sIndex >= 7) && (sIndex <= 10) {
+                destination.digitsDirection = false //обратный отсчет
+                destination.selectedTaskIndex = String(sIndex-4) //задания с обратным отсчетом
+            } else {
+                destination.selectedTaskIndex = String(sIndex+2) //обычные задания
+                destination.digitsDirection = true
+            }
+            
           }
      }
     

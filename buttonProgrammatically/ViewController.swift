@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     var lastPressed = Int()
     var totalError = 0
     var selectedTaskIndex = String()
-    var digitsColor = String()
+    var digitsColor = Int()
     var digitsDirection = Bool()
     var intDirection: Int {
         if digitsDirection {
@@ -42,8 +42,9 @@ class ViewController: UIViewController {
     //легкий режим с подсветкой после третьего раза
     //режим для алфавита)))
     //красный белый
-    //обезьяна
-    //
+    //обезьяна - отдельный контроллер или в этом по другому генерить задания массив заполняется 3 потом 000 потом shuffle потом через 3 сек
+    //скрываем
+    //доделать 2 цвета окончание и определение какой цвет был нажат и какой нужен
     
     
     
@@ -95,13 +96,17 @@ class ViewController: UIViewController {
             for i in 1...numberOfRow {
                 let bigButton = surveyButton()
                 var index = (j * numberOfRow - numberOfRow + 1) + i - 1
-                bigButton.setTitle("\(digit[index-1])", for: .normal)
+                
+                var str = digit[index-1]
+                if str.contains("c") {
+                    str = str.replacingOccurrences(of: "c", with: "")
+                    bigButton.setTitleColor(.red, for: .normal)
+                }
+                bigButton.setTitle("\(str)", for: .normal)
                 bigButton.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
                 stackViewTemp.addArrangedSubview(bigButton)
                
             }
-        
-           // setStackViewTempCinstrains()
         }
     }
     
@@ -117,14 +122,14 @@ class ViewController: UIViewController {
         
     }
     
-    func setStackViewTempCinstrains() {
-    /*    stackViewTemp.translatesAutoresizingMaskIntoConstraints                                                            = false
+   /* func setStackViewTempCinstrains() {
+       stackViewTemp.translatesAutoresizingMaskIntoConstraints                                                            = false
         stackViewTemp.topAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.topAnchor, constant: 2).isActive              = true
         stackViewTemp.leadingAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.leadingAnchor, constant: 2).isActive      = true
         stackViewTemp.trailingAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.trailingAnchor, constant: -2).isActive   = true
         stackViewTemp.bottomAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.bottomAnchor, constant: -2).isActive       = true
-         */
-    }
+         
+    }*/
     
   /*  func addButtonToStackView(numberof:Int) {
          
@@ -137,19 +142,23 @@ class ViewController: UIViewController {
     }*/
     
     func generateDigitArray(countDigitArray:Int) {
-        let size = Int(countDigitArray*countDigitArray)
+        var size = Int(countDigitArray*countDigitArray)
         var stRandom = String()
         var result = [String]()
         digit = [] //обнуление массива
         
+        if digitsColor == 1 {size = size/2}
         for j in 1...size {
              digit.append(String(j))
+            if digitsColor == 1 {
+                digit.append(String(j) + "c")
+            }
         }
-        
         digit.shuffle()
-        //print(digit)
+       // print(digit)
     }
-
+    
+/*
     func customButton(_ text:String,_ yline:Double) {
         let button = UIButton.init(type: .system)
         button.frame = CGRect(x: 50.0, y:yline, width: 50.0, height: 20.0)
@@ -158,12 +167,13 @@ class ViewController: UIViewController {
         button.layer.borderColor = UIColor.white.cgColor
         button.backgroundColor = UIColor.black
         button.titleLabel?.textColor = UIColor.white
+        //button.titleLabel?.textColor = UIColor.black
         button.tintColor = UIColor.white
         button.layer.cornerRadius = 3.0
         button.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
-        
         self.view.addSubview(button)
     }
+    */
     
     func startTimer() {
         sec = 0
@@ -174,14 +184,16 @@ class ViewController: UIViewController {
     
     @objc func buttonClicked(bb :UIButton) {
         
+        if bb.titleColor(for: .normal) == .white {print("!")}
+        
         totalPressed = totalPressed + 1
         print("totalPressed = \(totalPressed)")
        
         print("Pressed \(bb.titleLabel!.text!)")
-        var pressed = Int(bb.titleLabel!.text!)
+        let pressed = Int(bb.titleLabel!.text!)
        
          if totalPressed == 1 {
-            print("Start")
+           // print("Start")
             print(intDirection)
                 self.startTimer()
         }
@@ -331,7 +343,7 @@ class ViewController: UIViewController {
                 var tSt = prodTimeString(time: mmsec)
             //print("Поток :\(Thread.current)")
            // print("время \(mmsec)")
-                    self.timeLbl.text = tSt
+                self.timeLbl.text = tSt
           }
       }
 

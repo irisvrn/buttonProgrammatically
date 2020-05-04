@@ -9,7 +9,7 @@
 import UIKit
  
 class TableViewController: UITableViewController {
-    var task = ["2x2","3x3","4x4","5x5","6x6","7x7","8x8","3x3 обратный","4x4 обратный","5x5 обратный","6x6/обратный", "4x4 красный/белый", "6x6 красный/белый", "8x8 красный/белый","Обезьяна 3", "Обезьяна 4", "Обезьяна 5", "Обезьяна 6", "Обезьяна 7", "Обезьяна 8"]
+    var task = ["2x2","3x3","4x4","5x5","6x6","7x7","8x8","3x3 обратный","4x4 обратный","5x5 обратный","6x6/обратный", "4x4 красный/белый", "6x6 красный/белый", "8x8 красный/белый","Обезьяна 3", "Обезьяна 4", "Обезьяна 5", "Обезьяна 6", "Обезьяна 7", "Обезьяна 8", "Обезьяна 9", "Обезьяна 10"]
     var sss = String()
 
     override func viewDidLoad() {
@@ -51,24 +51,35 @@ class TableViewController: UITableViewController {
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueTask", let destination = segue.destination as? ViewController,
             let sIndex = tableView.indexPathForSelectedRow?.row {
-            
-            if (sIndex >= 7) && (sIndex <= 10) {
+            //условия заданий
+            switch sIndex {
+            case 7...10:
                 destination.digitsDirection = false //обратный отсчет
                 destination.selectedTaskIndex = String(sIndex-4) //задания с обратным отсчетом
                 destination.digitsColor = 0
-            } else if (sIndex == 11) {
+                destination.monkey = false
+            case 11:
                 destination.digitsDirection = true //прямой отсчет, два цвета
                 destination.selectedTaskIndex = String(sIndex-7)
                 destination.digitsColor = 1
-            } else if (sIndex == 12) {
+                destination.monkey = false
+            case 12:
                 destination.digitsDirection = true //прямой отсчет, два цвета
                 destination.selectedTaskIndex = String(sIndex-6)
                 destination.digitsColor = 1
-            } else if (sIndex == 13) {
+                destination.monkey = false
+            case 13:
                 destination.digitsDirection = true //прямой отсчет, два цвета
                 destination.selectedTaskIndex = String(sIndex-5)
                 destination.digitsColor = 1
-            } else {
+                destination.monkey = false
+            case 14...21:
+                destination.digitsDirection = true //monkey
+                destination.selectedTaskIndex = String(5)
+                destination.digitsColor = 0
+                destination.monkey = true
+                destination.monkeyDigits = sIndex - 11
+            default:
                 destination.selectedTaskIndex = String(sIndex+2) //обычные задания
                 destination.digitsDirection = true
                 destination.digitsColor = 0

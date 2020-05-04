@@ -27,6 +27,8 @@ class ViewController: UIViewController {
     var selectedTaskIndex = String()
     var digitsColor = Int()
     var digitsDirection = Bool()
+    var monkey = Bool()
+    var monkeyDigits = Int()
     var intDirection: Int {
         if digitsDirection {
             return 1
@@ -41,10 +43,7 @@ class ViewController: UIViewController {
 // при переворачивании пересчитывать constraints viewstack
     //легкий режим с подсветкой после третьего раза
     //режим для алфавита)))
-    //красный белый
-    //обезьяна - отдельный контроллер или в этом по другому генерить задания массив заполняется 3 потом 000 потом shuffle потом через 3 сек
-    //скрываем
-    //доделать 2 цвета окончание и определение какой цвет был нажат и какой нужен
+    //на обезьяне - поставить таймер после 5 сек - менять цвет цифр(как фон кнопок)
     
     
     
@@ -102,6 +101,9 @@ class ViewController: UIViewController {
                     str = str.replacingOccurrences(of: "c", with: "")
                     bigButton.setTitleColor(.red, for: .normal)
                 }
+                if str == "" {
+                    bigButton.backgroundColor = .none
+                }
                 bigButton.setTitle("\(str)", for: .normal)
                 bigButton.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
                 stackViewTemp.addArrangedSubview(bigButton)
@@ -115,31 +117,12 @@ class ViewController: UIViewController {
         stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: view.frame.height-view.frame.width-100).isActive              = true
         stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive      = true
         stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive   = true
-      //  stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive       = true
-       // stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -view.frame.height/2+40).isActive       = true
         stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100).isActive       = true
     
         
     }
     
-   /* func setStackViewTempCinstrains() {
-       stackViewTemp.translatesAutoresizingMaskIntoConstraints                                                            = false
-        stackViewTemp.topAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.topAnchor, constant: 2).isActive              = true
-        stackViewTemp.leadingAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.leadingAnchor, constant: 2).isActive      = true
-        stackViewTemp.trailingAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.trailingAnchor, constant: -2).isActive   = true
-        stackViewTemp.bottomAnchor.constraint(equalTo: stackView.safeAreaLayoutGuide.bottomAnchor, constant: -2).isActive       = true
-         
-    }*/
-    
-  /*  func addButtonToStackView(numberof:Int) {
-         
-        for i in 1...numberof {
-            let button = surveyButton()
-            button.setTitle("\(digit[i-1])", for: .normal)
-            button.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
-            stackView.addArrangedSubview(button)
-        }
-    }*/
+
     
     func generateDigitArray(countDigitArray:Int) {
         var size = Int(countDigitArray*countDigitArray)
@@ -149,7 +132,15 @@ class ViewController: UIViewController {
         
         if digitsColor == 1 {size = size/2}
         for j in 1...size {
-             digit.append(String(j))
+            if monkey == false {
+                digit.append(String(j))
+            } else {
+                if j > monkeyDigits {
+                    digit.append("")
+                } else {
+                    digit.append(String(j))
+                }
+            }
             if digitsColor == 1 {
                 digit.append(String(j) + "c")
             }
@@ -158,22 +149,6 @@ class ViewController: UIViewController {
        // print(digit)
     }
     
-/*
-    func customButton(_ text:String,_ yline:Double) {
-        let button = UIButton.init(type: .system)
-        button.frame = CGRect(x: 50.0, y:yline, width: 50.0, height: 20.0)
-        button.setTitle(text, for: .normal)
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.white.cgColor
-        button.backgroundColor = UIColor.black
-        button.titleLabel?.textColor = UIColor.white
-        //button.titleLabel?.textColor = UIColor.black
-        button.tintColor = UIColor.white
-        button.layer.cornerRadius = 3.0
-        button.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
-        self.view.addSubview(button)
-    }
-    */
     
     func startTimer() {
         sec = 0
@@ -184,7 +159,6 @@ class ViewController: UIViewController {
     
     @objc func buttonClicked(bb :UIButton) {
         
-        if bb.titleColor(for: .normal) == .white {print("!")}
         
         totalPressed = totalPressed + 1
         print("totalPressed = \(totalPressed)")
@@ -199,6 +173,7 @@ class ViewController: UIViewController {
         }
            
         if intDirection == 1 {
+            if digitsColor != 1 {
             //прямой отсчет
             if (pressed == Int(self.countGlobal*self.countGlobal)) && (self.lastPressed+intDirection == pressed) {
                              timer?.invalidate()
@@ -227,6 +202,47 @@ class ViewController: UIViewController {
                     self.playSound(playSound: "Error")
                     }
         }
+            } else {
+                //2 цвета
+                
+                if (pressed == Int(self.countGlobal*self.countGlobal/2)) && (self.lastPressed+intDirection == pressed) && (bb.titleColor(for: .normal) == .white) {
+                    
+                                 timer?.invalidate()
+                                 DispatchQueue.main.async {
+                                     self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                                     self.playSound(playSound: "finish")
+                                 }
+                         }
+        
+                    if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal/2)) && (bb.titleColor(for: .normal) == .white) {
+                        self.lastPressed = pressed!
+                    
+                        DispatchQueue.main.async {
+                            self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                            self.playSound(playSound: "Ok")
+                            }
+                    
+                } else
+                        if (self.lastPressed+intDirection != pressed) && (pressed != Int(self.countGlobal*self.countGlobal/2)) {
+                            print("Error. last \(self.lastPressed)")
+                            self.totalError = self.totalError+1
+                        DispatchQueue.main.async {
+                            self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                            self.playSound(playSound: "Error")
+                            }
+                            //проверка ошибок на цвет
+                }
+                 if (bb.titleColor(for: .normal) != .white) {
+                                           print("Error. last \(self.lastPressed)")
+                                           self.totalError = self.totalError+1
+                                       DispatchQueue.main.async {
+                                           self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                                           self.playSound(playSound: "Error")
+                                           }
+                }
+                
+            }
+            
         } else {
             //обратный отсчет
             if (pressed == 1) && (self.lastPressed+intDirection == pressed) {
@@ -238,9 +254,7 @@ class ViewController: UIViewController {
                              self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
                              self.playSound(playSound: "finish")
                          }
-                         
                  }
-            
             
             if (self.lastPressed+intDirection == pressed) && (pressed != 1) {
                            self.lastPressed = pressed!

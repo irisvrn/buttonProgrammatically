@@ -105,6 +105,9 @@ class ViewController: UIViewController {
                     bigButton.backgroundColor = .none
                 }
                 bigButton.setTitle("\(str)", for: .normal)
+                if monkey == true {
+                    delayButtonHidden(bibbigbutton: bigButton)
+                }
                 bigButton.addTarget(self, action: #selector(buttonClicked(bb :)), for: .touchUpInside)
                 stackViewTemp.addArrangedSubview(bigButton)
                
@@ -175,33 +178,64 @@ class ViewController: UIViewController {
         if intDirection == 1 {
             if digitsColor != 1 {
             //прямой отсчет
-            if (pressed == Int(self.countGlobal*self.countGlobal)) && (self.lastPressed+intDirection == pressed) {
-                             timer?.invalidate()
-                         
-                         DispatchQueue.main.async {
-                             self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
-                             self.playSound(playSound: "finish")
-                         }
-                         
-                 }
-            
-            if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
-                self.lastPressed = pressed!
-            
-                DispatchQueue.main.async {
-                    self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
-                    self.playSound(playSound: "Ok")
+                if monkey {
+                    //monkey
+                    if (pressed == Int(monkeyDigits)) && (self.lastPressed+intDirection == pressed) {
+                                           timer?.invalidate()
+                                       
+                                       DispatchQueue.main.async {
+                                           self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                                           self.playSound(playSound: "finish")
+                                       }
+                          }
+                          
+                          if (self.lastPressed+intDirection == pressed) && (pressed != Int(monkeyDigits)) {
+                              self.lastPressed = pressed!
+                          
+                              DispatchQueue.main.async {
+                                  self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                                  self.playSound(playSound: "Ok")
+                                  }
+                          
+                          } else
+                              if (self.lastPressed+intDirection != pressed) && (pressed != Int(monkeyDigits)) {
+                                  print("Error. last \(self.lastPressed)")
+                                  self.totalError = self.totalError+1
+                              DispatchQueue.main.async {
+                                  self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                                  self.playSound(playSound: "Error")
+                                  }
+                              }
+                    
+                } else {
+                    if (pressed == Int(self.countGlobal*self.countGlobal)) && (self.lastPressed+intDirection == pressed) {
+                                     timer?.invalidate()
+                                 
+                                 DispatchQueue.main.async {
+                                     self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                                     self.playSound(playSound: "finish")
+                                 }
                     }
-            
-        } else
-                if (self.lastPressed+intDirection != pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
-                    print("Error. last \(self.lastPressed)")
-                    self.totalError = self.totalError+1
-                DispatchQueue.main.async {
-                    self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
-                    self.playSound(playSound: "Error")
-                    }
-        }
+                    
+                    if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
+                        self.lastPressed = pressed!
+                    
+                        DispatchQueue.main.async {
+                            self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                            self.playSound(playSound: "Ok")
+                            }
+                    
+                    } else
+                        if (self.lastPressed+intDirection != pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
+                            print("Error. last \(self.lastPressed)")
+                            self.totalError = self.totalError+1
+                        DispatchQueue.main.async {
+                            self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                            self.playSound(playSound: "Error")
+                            }
+                        }
+                }
+                
             } else {
                 //2 цвета
                 
@@ -300,7 +334,8 @@ class ViewController: UIViewController {
     
         configureStackView(numberOfBut: sizeSmall)
         mmsec = 0
-    
+        
+      //  delayButtonHidden
     }
     
    
@@ -361,6 +396,16 @@ class ViewController: UIViewController {
           }
       }
 
+    func delayButtonHidden(bibbigbutton: UIButton) {
+        //меняем цвет текста на кнопоках через 3 сеекунды
+        let queue = DispatchQueue.global(qos: .utility)
+        queue.async {
+            sleep(3)
+            DispatchQueue.main.async {
+                bibbigbutton.setTitleColor(.purple, for: .normal)
+            }
+        }
+    }
 
 }
 

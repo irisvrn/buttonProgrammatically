@@ -49,6 +49,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="resLabel" destination="fuE-O8-umz" id="saK-gm-jcV"/>
+                        <outlet property="restartBtn" destination="6KC-yS-pmN" id="Lp2-Ni-AwG"/>
                         <outlet property="timeLbl" destination="K2I-et-BmN" id="EiG-PL-2nW"/>
                     </connections>
                 </viewController>

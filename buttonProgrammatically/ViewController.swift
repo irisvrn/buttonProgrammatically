@@ -43,9 +43,9 @@ class ViewController: UIViewController {
 // при переворачивании пересчитывать constraints viewstack
     //легкий режим с подсветкой после третьего раза
     //режим для алфавита)))
-    //на обезьяне - поставить таймер после 5 сек - менять цвет цифр(как фон кнопок)
+    //в обезьяне не правильно работает restart
     
-    
+    @IBOutlet weak var restartBtn: UIBarButtonItem!
     
     @IBAction func resstartButton(_ sender: Any) {
         stackView = UIStackView() //обнуление stackView
@@ -62,6 +62,7 @@ class ViewController: UIViewController {
               
               playSound(playSound: "restart")
               totalPressed = 0
+        
     }
     
     
@@ -97,6 +98,7 @@ class ViewController: UIViewController {
                 var index = (j * numberOfRow - numberOfRow + 1) + i - 1
                 
                 var str = digit[index-1]
+                print("::\(str)")
                 if str.contains("c") {
                     str = str.replacingOccurrences(of: "c", with: "")
                     bigButton.setTitleColor(.red, for: .normal)
@@ -161,13 +163,19 @@ class ViewController: UIViewController {
     }
     
     @objc func buttonClicked(bb :UIButton) {
-        
+        var pressed = Int()
         
         totalPressed = totalPressed + 1
         print("totalPressed = \(totalPressed)")
        
-        print("Pressed \(bb.titleLabel!.text!)")
-        let pressed = Int(bb.titleLabel!.text!)
+        if bb.titleLabel!.text != nil {
+            print("Pressed \(bb.titleLabel!.text)")
+            pressed = Int(bb.titleLabel!.text!)!
+        } else {
+            print("Pressed 0")
+            pressed = 0
+        }
+        
        
          if totalPressed == 1 {
            // print("Start")
@@ -180,20 +188,24 @@ class ViewController: UIViewController {
             //прямой отсчет
                 if monkey {
                     //monkey
-                    if (pressed == Int(monkeyDigits)) && (self.lastPressed+intDirection == pressed) {
+                    if (pressed == Int(monkeyDigits)) && (self.lastPressed+intDirection == pressed) && (bb.titleColor(for: .normal) == .purple) {
                                            timer?.invalidate()
                                        
                                        DispatchQueue.main.async {
-                                           self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
-                                           self.playSound(playSound: "finish")
+                                            self.resLabel.text = "Finished! Your time is \(self.timeLbl.text!) sec"
+                                            bb.backgroundColor = .systemYellow
+                                            bb.setTitleColor(.systemYellow, for: .normal)
+                                            self.playSound(playSound: "finish")
                                        }
                           }
                           
-                          if (self.lastPressed+intDirection == pressed) && (pressed != Int(monkeyDigits)) {
-                              self.lastPressed = pressed!
+                    if (self.lastPressed+intDirection == pressed) && (pressed != Int(monkeyDigits) && (bb.titleColor(for: .normal) == .purple)) {
+                        self.lastPressed = pressed
                           
                               DispatchQueue.main.async {
                                   self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                                  bb.backgroundColor = .systemYellow
+                                  bb.setTitleColor(.systemYellow, for: .normal)
                                   self.playSound(playSound: "Ok")
                                   }
                           
@@ -205,9 +217,16 @@ class ViewController: UIViewController {
                                   self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
                                   self.playSound(playSound: "Error")
                                   }
-                              }
-                    
+                              } else if (bb.titleColor(for: .normal) != .purple) || (bb.titleLabel == nil) {
+                                print("Error. last \(self.lastPressed)")
+                                    self.totalError = self.totalError+1
+                                DispatchQueue.main.async {
+                                    self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                                    self.playSound(playSound: "Error")
+                                }
+                    }
                 } else {
+                    //нормальный режим
                     if (pressed == Int(self.countGlobal*self.countGlobal)) && (self.lastPressed+intDirection == pressed) {
                                      timer?.invalidate()
                                  
@@ -218,7 +237,7 @@ class ViewController: UIViewController {
                     }
                     
                     if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal)) {
-                        self.lastPressed = pressed!
+                        self.lastPressed = pressed
                     
                         DispatchQueue.main.async {
                             self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
@@ -249,7 +268,7 @@ class ViewController: UIViewController {
                          }
         
                     if (self.lastPressed+intDirection == pressed) && (pressed != Int(self.countGlobal*self.countGlobal/2)) && (bb.titleColor(for: .normal) == .white) {
-                        self.lastPressed = pressed!
+                        self.lastPressed = pressed
                     
                         DispatchQueue.main.async {
                             self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
@@ -291,7 +310,7 @@ class ViewController: UIViewController {
                  }
             
             if (self.lastPressed+intDirection == pressed) && (pressed != 1) {
-                           self.lastPressed = pressed!
+                           self.lastPressed = pressed
                        
                            DispatchQueue.main.async {
                                self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
@@ -397,12 +416,14 @@ class ViewController: UIViewController {
       }
 
     func delayButtonHidden(bibbigbutton: UIButton) {
-        //меняем цвет текста на кнопоках через 3 сеекунды
+        //меняем цвет текста на кнопоках через 3 секунды
         let queue = DispatchQueue.global(qos: .utility)
+        restartBtn.isEnabled = false
         queue.async {
             sleep(3)
             DispatchQueue.main.async {
                 bibbigbutton.setTitleColor(.purple, for: .normal)
+                self.restartBtn.isEnabled = true
             }
         }
     }

@@ -65,6 +65,8 @@ class ViewController: UIViewController {
         
     }
     
+  
+    
     
     @IBOutlet weak var timeLbl: UILabel!
     @IBOutlet weak var resLabel: UILabel!
@@ -72,13 +74,20 @@ class ViewController: UIViewController {
     func configureStackView(numberOfBut: Int) {
         
         print("number of button \(numberOfBut)")
-        stackView.removeArrangedSubview(view)
-        view.addSubview(stackView)
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 10
-        setStackViewCinstrains()
-        setTempStackView(numberOfRow: numberOfBut)
+        
+        
+        DispatchQueue.main.async {
+            self.stackView.removeArrangedSubview(self.view)
+            self.view.addSubview(self.stackView)
+            self.stackView.axis = .vertical
+            self.stackView.distribution = .fillEqually
+            self.stackView.spacing = 10
+            self.setStackViewCinstrains()
+            self.setTempStackView(numberOfRow: numberOfBut)
+        }
+               
+            
+       
     }
     
     func setTempStackView(numberOfRow: Int) {
@@ -104,7 +113,7 @@ class ViewController: UIViewController {
                     bigButton.setTitleColor(.red, for: .normal)
                 }
                 if str == "" {
-                    bigButton.backgroundColor = .none
+                    bigButton.backgroundColor = .systemYellow
                 }
                 bigButton.setTitle("\(str)", for: .normal)
                 if monkey == true {
@@ -124,7 +133,6 @@ class ViewController: UIViewController {
         stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive   = true
         stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100).isActive       = true
     
-        
     }
     
 
@@ -271,7 +279,7 @@ class ViewController: UIViewController {
                         self.lastPressed = pressed
                     
                         DispatchQueue.main.async {
-                            self.resLabel.text = "ok, next is \(Int(bb.titleLabel!.text!)! + self.intDirection)"
+                            self.resLabel.text = "ok, next is white \(Int(bb.titleLabel!.text!)! + self.intDirection)"
                             self.playSound(playSound: "Ok")
                             }
                     
@@ -280,7 +288,7 @@ class ViewController: UIViewController {
                             print("Error. last \(self.lastPressed)")
                             self.totalError = self.totalError+1
                         DispatchQueue.main.async {
-                            self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                            self.resLabel.text = "Error : \(self.totalError). next is white \(self.lastPressed + self.intDirection)"
                             self.playSound(playSound: "Error")
                             }
                             //проверка ошибок на цвет
@@ -289,7 +297,7 @@ class ViewController: UIViewController {
                                            print("Error. last \(self.lastPressed)")
                                            self.totalError = self.totalError+1
                                        DispatchQueue.main.async {
-                                           self.resLabel.text = "Error : \(self.totalError). next is \(self.lastPressed + self.intDirection)"
+                                           self.resLabel.text = "Error : \(self.totalError). next is white \(self.lastPressed + self.intDirection)"
                                            self.playSound(playSound: "Error")
                                            }
                 }
@@ -339,8 +347,14 @@ class ViewController: UIViewController {
         generateDigitArray(countDigitArray: countGlobal ) //генерация массива с данными
         timer?.invalidate()
       
+        print("countglobal: \(countGlobal)")
+        
         if digitsDirection {
-                 resLabel.text = "Push 1"
+            if digitsColor == 1 {
+                 resLabel.text = "Push white 1"
+            } else {
+                resLabel.text = "Push 1"
+            }
              }
              else {
                 resLabel.text = "Push " + String(countGlobal*countGlobal)

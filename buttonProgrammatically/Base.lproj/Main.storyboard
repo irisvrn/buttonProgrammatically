@@ -57,7 +57,7 @@
             </objects>
             <point key="canvasLocation" x="992.79999999999995" y="27.436281859070466"/>
         </scene>
-        <!--Choose-->
+        <!--Tasks-->
         <scene sceneID="RAi-E1-5K5">
             <objects>
                 <tableViewController id="Ena-T2-UAg" customClass="TableViewController" customModule="buttonProgrammatically" customModuleProvider="target" sceneMemberID="viewController">
@@ -95,7 +95,9 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Choose" id="Obc-wl-wXV"/>
+                    <navigationItem key="navigationItem" title="Tasks" id="Obc-wl-wXV">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="info.circle" catalog="system" id="tXG-eh-m8D"/>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qBU-5J-gqb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -120,4 +122,7 @@
             <point key="canvasLocation" x="-767.20000000000005" y="26.53673163418291"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="info.circle" catalog="system" width="64" height="60"/>
+    </resources>
 </document>

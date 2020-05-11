@@ -57,6 +57,22 @@
             </objects>
             <point key="canvasLocation" x="992.79999999999995" y="27.436281859070466"/>
         </scene>
+        <!--InfoVC-->
+        <scene sceneID="cWd-Ed-9WT">
+            <objects>
+                <viewController id="kBe-Zg-rET" customClass="InfoVC" customModule="buttonProgrammatically" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5uO-qB-biF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="A8z-XH-qJ3"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="iZN-E8-LoU"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ciW-pU-g3N" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="992.79999999999995" y="-672.41379310344837"/>
+        </scene>
         <!--Tasks-->
         <scene sceneID="RAi-E1-5K5">
             <objects>
@@ -96,7 +112,11 @@
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Tasks" id="Obc-wl-wXV">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="info.circle" catalog="system" id="tXG-eh-m8D"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="info.circle" catalog="system" id="tXG-eh-m8D">
+                            <connections>
+                                <segue destination="kBe-Zg-rET" kind="show" id="gyO-oF-mBa"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qBU-5J-gqb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

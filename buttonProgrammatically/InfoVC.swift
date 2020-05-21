@@ -12,19 +12,32 @@ import WebKit
 @available(iOS 13.0, *)
 @available(iOS 13.0, *)
 @available(iOS 13.0, *)
+
+
+
+
+
+@available(iOS 13.0, *)
+@available(iOS 13.0, *)
 class InfoVC: UIViewController {
 let versionLbl = UILabel()
 let aboutLbl = UILabel()
+let switcherr = UISwitch()
 let  webViewFrame = WKWebView()
 let indicator = UIActivityIndicatorView()
     
     
     
+    // взять-установить настройки показывать или нет первые рекламные экран, рассказывающие что нажимать
+ 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
+        
         versionLabel()
         aboutLabel()
+        switcherCreator()
         webViewFrameCreate()
         indicatorCreate()
         
@@ -36,6 +49,30 @@ let indicator = UIActivityIndicatorView()
         }
     }
     
+    func  switcherCreator() {
+        switcherr.isOn = Model.shared.getSettings()
+        switcherr.onTintColor = .purple
+        switcherr.addTarget(self, action: #selector(switcherAction(_:)), for: .valueChanged)
+        view.addSubview(switcherr)
+               
+        switcherr.layer.masksToBounds = true
+        switcherr.translatesAutoresizingMaskIntoConstraints = false
+        switcherr.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        switcherr.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
+    }
+    
+    @objc func switcherAction(_ sender:UISwitch!) {
+        if (sender.isOn == true) {
+            print("value changed to true")
+            Model.shared.setSettings(switcherAdv: true)
+        } else
+        {
+            Model.shared.setSettings(switcherAdv: false)
+            print("value changed to false")
+        }
+    }
+
+    @available(iOS 13.0, *)
     func indicatorCreate() {
         indicator.startAnimating()
         indicator.style = .medium
@@ -76,7 +113,8 @@ let indicator = UIActivityIndicatorView()
         versionLbl.translatesAutoresizingMaskIntoConstraints = false
         versionLbl.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         versionLbl.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
-        versionLbl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 20).isActive = true
+        versionLbl.widthAnchor.constraint(equalToConstant: 200).isActive = true
+       // versionLbl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 20).isActive = true
         versionLbl.heightAnchor.constraint(equalToConstant: 40)
     }
     

@@ -44,6 +44,8 @@ class ViewController: UIViewController {
     //легкий режим с подсветкой после третьего раза
     //режим для алфавита)))
     //в обезьяне не правильно работает restart
+    //adv контроллер добавить слайдер и текст с картинками что делать на весь экран. смотри тесты
+    
     
     @IBOutlet weak var restartBtn: UIBarButtonItem!
     

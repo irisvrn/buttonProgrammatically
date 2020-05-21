@@ -8,6 +8,7 @@
 
 import UIKit
 
+@available(iOS 13.0, *)
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        var hideAdv = Model.shared.getSettings()
+               if hideAdv == false {
+                
+                let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                
+                let homePage = mainStoryboard.instantiateViewController(identifier: "advVC") as! AdvVC
+                self.window?.rootViewController = homePage
+                
+       
+               }
+   
+        
+        
         return true
     }
 

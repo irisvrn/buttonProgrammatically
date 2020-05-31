@@ -15,6 +15,8 @@ class Model: NSObject {
     
     
 static let shared = Model()
+    var advertImages = ["kvadrat","kvadrat","kvadrat"]
+    var advertText = ["Текст для первого рекламного блока на белом фонеЮ будем рассказывать как для чего это все нужно ","Про обратные задания и так далее как важно постоянно тернироваться и на что это влияетт взять со страницы в интернете","самое сложное заджанеие- цифровая обезяна  - обезьяна возможно вставить видео о том как проверяют обеезьян"]
     
     struct albums {
         var collectionName: String //new
@@ -25,6 +27,7 @@ static let shared = Model()
             artworkUrl100 = dictionary["artworkUrl100"] as? String ?? ""
         }
     }
+    
     
     func setSettings(switcherAdv: Bool) {
              UserDefaults.standard.set(switcherAdv, forKey: "showAdv" )

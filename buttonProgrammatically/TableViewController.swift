@@ -12,6 +12,7 @@ import Foundation
 @available(iOS 13.0, *)
 class TableViewController: UITableViewController {
     var task = ["Таблица Шульте 2x2","3x3","4x4","5x5","6x6","7x7","8x8","3x3 обратный","4x4 обратный","5x5 обратный","6x6 обратный", "4x4 красный/белый", "6x6 красный/белый", "8x8 красный/белый","Обезьяна 3", "Обезьяна 4", "Обезьяна 5", "Обезьяна 6", "Обезьяна 7", "Обезьяна 8", "Обезьяна 9", "Обезьяна 10"]
+ 
     var sss = String()
 
     override func viewDidLoad() {
